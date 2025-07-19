@@ -1,0 +1,6 @@
+@BEESHOP.MAIN.API_HostAddress = http://localhost:5198
+
+GET {{BEESHOP.MAIN.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

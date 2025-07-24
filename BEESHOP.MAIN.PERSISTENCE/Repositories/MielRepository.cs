@@ -33,4 +33,23 @@ internal class MielRepository : DbRepository<Miel>, IMielRepository
 
         return result;
     }
+
+    public async Task<Miel?> RecupererParId(Guid id)
+    {
+        // Prépare la commande SQL pour récupérer le miel par son ID
+        using var cmd = _db.CreateCommand($"SELECT {ColumnName} FROM {TableName} WHERE id = @id");
+        
+        cmd.Parameters.AddWithValue("id", id);
+
+        // Exécute la commande et obtient un lecteur de données
+        using var reader = await cmd.ExecuteReaderAsync();
+
+        // Vérifie si le lecteur a des lignes
+        if (await reader.ReadAsync())
+        {
+            var json = reader.GetString(0);
+            return JsonSerializer.Deserialize<Miel>(json);
+        }
+        return null; // Si aucun miel n'est trouvé
+    }
 }

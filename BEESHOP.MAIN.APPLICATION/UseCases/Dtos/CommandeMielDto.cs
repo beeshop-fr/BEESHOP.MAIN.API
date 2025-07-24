@@ -1,6 +1,5 @@
-﻿namespace BEESHOP.MAIN.APPLICATION.UseCases.Dtos
+﻿namespace BEESHOP.MAIN.APPLICATION.UseCases.Dtos;
+
+internal class CommandeMielDto
 {
-    internal class CommandeMielDto
-    {
-    }
 }

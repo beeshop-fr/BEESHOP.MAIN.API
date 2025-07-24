@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace BEESHOP.MAIN.PERSISTENCE.Common.Config.Section;
 

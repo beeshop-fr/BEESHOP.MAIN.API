@@ -1,7 +1,6 @@
 ﻿using BEESHOP.MAIN.APPLICATION.Abstractions;
 using BEESHOP.MAIN.APPLICATION.UseCases.Dtos;
 using BEESHOP.MAIN.APPLICATION.UseCases.Miels.Queries;
-using BEESHOP.MAIN.DOMAIN.Miels;
 using Mapster;
 using MediatR;
 using Microsoft.Extensions.Logging;

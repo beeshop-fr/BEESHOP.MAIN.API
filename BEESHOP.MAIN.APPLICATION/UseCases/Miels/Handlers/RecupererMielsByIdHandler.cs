@@ -22,7 +22,7 @@ public class RecupererMielsByIdHandler : IRequestHandler<RecupererMielByIdQuery,
         _logger.LogInformation("Handling RecupererMielByIdQuery for ID: {Id}", request.Id);
 
         // Appel au repository pour récupérer le miel par ID
-        var miel = _mielRepository.RecupererParId(request.Id);
+        var miel = await _mielRepository.RecupererParId(request.Id);
 
         if (miel == null)
         {

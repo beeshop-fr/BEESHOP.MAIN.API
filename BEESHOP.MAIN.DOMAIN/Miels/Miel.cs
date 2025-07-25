@@ -24,6 +24,8 @@ public class Miel : IdentifiableEntity
         Poids = poids;
     }
 
+    public Miel() : base(Guid.Empty) { }
+
     public string Nom { get; set; }
     public ETypeMiel TypeMiel { get; set; }
     public decimal Prix { get; set; }

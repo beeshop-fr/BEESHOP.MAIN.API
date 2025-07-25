@@ -22,10 +22,7 @@ public class HttpMiel : IEndpointDefinition
 
         group.MapPut("/Miel/{id:guid}", async (IMediator mediator, Guid id, ModifierMielCommand command) =>
         {
-            if (id != command.Id)
-            {
-                return Results.BadRequest("ID mismatch");
-            }
+            command.Id = id;
             var updated = await mediator.Send(command);
             return Results.Ok(updated);
         });

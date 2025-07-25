@@ -21,9 +21,12 @@ public sealed class CreerMielHandler : IRequestHandler<CreerMielCommand, MielDto
 
     public async Task<MielDto> Handle(CreerMielCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Création d'un miel", request.nom);
+        _logger.LogInformation("Création d'un miel", request.Nom);
 
-        Miel miel = new(request.nom, request.type, request.prix, request.description, request.poids);
+        if (!Enum.TryParse<ETypeMiel>(request.Type, out var parsedType))
+            throw new ArgumentException($"Type de miel invalide : {request.Type}");
+
+        Miel miel = new(request.Nom, parsedType, request.Prix, request.Description, request.Poids);
 
         miel = await _mielRepository.Creer(miel);
 

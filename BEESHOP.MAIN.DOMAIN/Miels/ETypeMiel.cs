@@ -2,7 +2,7 @@
 
 public enum ETypeMiel
 {
-    PrintempCremeux,
-    PrintempLiquide,
+    PrintempsCremeux,
+    PrintempsLiquide,
     EteLiquide,
 }

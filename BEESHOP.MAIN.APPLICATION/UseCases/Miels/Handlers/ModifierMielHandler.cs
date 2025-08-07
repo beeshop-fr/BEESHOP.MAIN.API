@@ -32,12 +32,9 @@ public sealed class ModifierMielHandler : IRequestHandler<ModifierMielCommand, M
             throw new KeyNotFoundException($"Miel with ID {request.Id} not found");
         }
 
-        if (!Enum.TryParse<ETypeMiel>(request.Type, out var parsedType))
-            throw new ArgumentException($"Type de miel invalide : {request.Type}");
-
         // Update the miel properties
         existingMiel.Nom = request.Nom;
-        existingMiel.TypeMiel = parsedType;
+        existingMiel.TypeMiel = request.Type;
         existingMiel.Prix = request.Prix;
         existingMiel.Description = request.Description;
         existingMiel.Poids = request.Poids;

@@ -6,22 +6,24 @@ namespace BEESHOP.MAIN.DOMAIN.Miels;
 public class Miel : IdentifiableEntity
 {
     [JsonConstructor]
-    public Miel(Guid Id, string nom, ETypeMiel type, decimal prix, string description, int poids) : base(Id)
+    public Miel(Guid Id, string nom, ETypeMiel type, decimal prix, string description, int poids, string? imagePath) : base(Id)
     {
         Nom = nom;
         TypeMiel = type;
         Prix = prix;
         Description = description;
         Poids = poids;
+        ImagePath = imagePath;
     }
 
-    public Miel(string nom, ETypeMiel type, decimal prix, string description, int poids)
+    public Miel(string nom, ETypeMiel type, decimal prix, string description, int poids, string? imagePath)
     {
         Nom = nom;
         TypeMiel = type;
         Prix = prix;
         Description = description;
         Poids = poids;
+        ImagePath = imagePath;
     }
 
     public Miel() : base(Guid.Empty) { }
@@ -31,4 +33,5 @@ public class Miel : IdentifiableEntity
     public decimal Prix { get; set; }
     public string Description { get; set; }
     public int Poids { get; set; }
+    public string? ImagePath { get; set; }
 }

@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 namespace BEESHOP.MAIN.APPLICATION.UseCases.Miels.Commands;
 
 public record ModifierMielCommand(string Nom,
-                                  string Type,
+                                  ETypeMiel Type,
                                   int Prix,
                                   string Description,
                                   int Poids) : IRequest<MielDto>

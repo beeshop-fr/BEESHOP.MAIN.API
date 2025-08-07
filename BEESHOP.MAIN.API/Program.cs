@@ -1,7 +1,9 @@
 using BEESHOP.MAIN.API.Abstractions;
+using BEESHOP.MAIN.APPLICATION;
 using BEESHOP.MAIN.PERSISTENCE;
 using Npgsql;
 using Serilog;
+using System.Text.Json.Serialization;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -11,10 +13,24 @@ Log.Information("Lancement de l'API");
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:3000") // <- ton front Nuxt
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddPersistenceServices(builder.Configuration);
+builder.Services.AddApplicationServices();
 builder.Services.AddSwaggerGen();
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(opts =>
+{
+    opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+}); ;
 builder.Services.AddEndpointDefinitions(typeof(Program));
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly)); builder.Services.AddMediatR(cfg =>
 {
@@ -42,13 +58,17 @@ try
 catch (Exception ex)
 {
     Console.WriteLine($"Erreur lors du test de connexion PostgreSQL : {ex.Message}");
-    throw; // Optionnel : tu peux le relancer pour planter au démarrage
+    throw;
 }
-
+app.UseCors();
+app.UseStaticFiles();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-//app.UseAuthorization();
+app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapControllers();
 app.UseEndpointDefinitions();
 

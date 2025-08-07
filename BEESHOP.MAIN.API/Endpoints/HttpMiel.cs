@@ -3,6 +3,7 @@ using BEESHOP.MAIN.APPLICATION.UseCases.Dtos;
 using BEESHOP.MAIN.APPLICATION.UseCases.Miels.Commands;
 using BEESHOP.MAIN.APPLICATION.UseCases.Miels.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BEESHOP.MAIN.API.Endpoints;
 
@@ -12,12 +13,33 @@ public class HttpMiel : IEndpointDefinition
     {
         var group = app.MapGroup("/api/main");
 
-        group.MapPost("/Miel", async (IMediator mediator, CreerMielCommand command) =>
+        group.MapPost("/Miel", async (HttpRequest request, IMediator mediator, [FromForm] CreerMielCommand command) =>
         {
+            string? imagePath = null;
+            if (command.Image is not null)
+            {
+                var ext = Path.GetExtension(command.Image.FileName);
+                if (!new[] { ".jpg", ".jpeg", ".png" }.Contains(ext.ToLower()))
+                    return Results.BadRequest("Format d'image non supporté");
+
+                var filename = $"{Guid.NewGuid()}{ext}";
+                var filePath = Path.Combine("wwwroot/images", filename);
+                Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
+
+                using var stream = File.Create(filePath);
+                await command.Image.CopyToAsync(stream);
+
+                imagePath = $"/images/{filename}";
+            }
+
+            request.HttpContext.Items["ImagePath"] = imagePath;
+
             var created = await mediator.Send(command);
             return Results.Created($"/api/main/Miel/{created.Id}", created);
         })
+        .DisableAntiforgery()
         .WithName("CreateMiel")
+        .Accepts<CreerMielCommand>("multipart/form-data")
         .Produces<MielDto>(StatusCodes.Status201Created);
 
         group.MapPut("/Miel/{id:guid}", async (IMediator mediator, Guid id, ModifierMielCommand command) =>
@@ -37,7 +59,7 @@ public class HttpMiel : IEndpointDefinition
         .Produces<MielDto>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status404NotFound);
 
-        group.MapGet("/Miels", async (IMediator mediator) =>
+        group.MapGet("/Miel", async (IMediator mediator) =>
         {
             var query = new RecupererMielsQuery();
             var result = await mediator.Send(query);

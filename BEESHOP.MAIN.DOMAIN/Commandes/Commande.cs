@@ -1,19 +1,27 @@
 ﻿using BEESHOP.MAIN.DOMAIN.Common;
+using System.Text.Json.Serialization;
 
 namespace BEESHOP.MAIN.DOMAIN.Commandes;
 
 public class Commande : IdentifiableEntity
 {
-    public Commande(int quantite, DateTime dateCommande, string userEmail, Guid mielId) : base(Guid.NewGuid())
+    [JsonConstructor]
+    public Commande(Guid id, DateTime dateCommande, string userEmail, EStatutCommande statut) : base(id)
     {
-        this.quantite = quantite;
         this.dateCommande = dateCommande;
         this.userEmail = userEmail;
-        this.mielId = mielId;
+        this.statut = statut;
+    }
+    public Commande(DateTime dateCommande, string userEmail, EStatutCommande statut) : base(Guid.NewGuid())
+    {
+        this.dateCommande = dateCommande;
+        this.userEmail = userEmail;
+        this.statut = statut;
     }
 
-    public int quantite { get; set; }
+    public Commande() : base(Guid.Empty) { }
+
     public DateTime dateCommande { get; set; }
     public string userEmail { get; set; }
-    public Guid mielId { get; set; }
+    public EStatutCommande statut { get; set; } = EStatutCommande.EnCours;
 }

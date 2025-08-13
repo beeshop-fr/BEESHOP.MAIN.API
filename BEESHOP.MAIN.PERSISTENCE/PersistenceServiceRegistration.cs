@@ -1,4 +1,6 @@
-﻿using BEESHOP.MAIN.PERSISTENCE.Common.Config.Section;
+﻿using BEESHOP.MAIN.APPLICATION.Abstractions.Common;
+using BEESHOP.MAIN.PERSISTENCE.Common.Config.Section;
+using BEESHOP.MAIN.PERSISTENCE.Common.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,6 +12,9 @@ public static class PersistenceServiceRegistration
     {
         var postgreConfig = configuration.GetConfigSection<SectionPostgre>(SectionPostgre.SectionName);
         var keycloakConfig = configuration.GetConfigSection<SectionKeycloak>(SectionKeycloak.SectionName);
+        var smtpConfig = configuration.GetConfigSection<SectionSmtp>(SectionSmtp.SectionName);
+
+        services.AddSingleton(smtpConfig);
 
         return services
             .AddNpgsqlDataSource(postgreConfig!.ConnectionString, o => o.EnableParameterLogging())

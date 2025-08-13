@@ -1,9 +1,9 @@
 ﻿using BEESHOP.MAIN.APPLICATION.Abstractions;
 using BEESHOP.MAIN.APPLICATION.UseCases.Dtos;
 using BEESHOP.MAIN.APPLICATION.UseCases.Miels.Commands;
-using BEESHOP.MAIN.DOMAIN.Miels;
 using Mapster;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace BEESHOP.MAIN.APPLICATION.UseCases.Miels.Handlers;
@@ -11,11 +11,16 @@ namespace BEESHOP.MAIN.APPLICATION.UseCases.Miels.Handlers;
 public sealed class ModifierMielHandler : IRequestHandler<ModifierMielCommand, MielDto>
 {
     private readonly IMielRepository _mielRepository;
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogger<ModifierMielHandler> _logger;
 
-    public ModifierMielHandler(ILogger<ModifierMielHandler> logger, IMielRepository mielRepository)
+    public ModifierMielHandler(
+        ILogger<ModifierMielHandler> logger,
+        IMielRepository mielRepository,
+        IHttpContextAccessor httpContextAccessor)
     {
         _mielRepository = mielRepository;
+        _httpContextAccessor = httpContextAccessor;
         _logger = logger;
     }
 
@@ -23,7 +28,6 @@ public sealed class ModifierMielHandler : IRequestHandler<ModifierMielCommand, M
     {
         _logger.LogInformation("Modification d'un miel avec l'ID {Id}", request.Id);
 
-        // Retrieve the existing miel from the repository
         var existingMiel = await _mielRepository.RecupererParId(request.Id);
 
         if (existingMiel == null)
@@ -32,19 +36,24 @@ public sealed class ModifierMielHandler : IRequestHandler<ModifierMielCommand, M
             throw new KeyNotFoundException($"Miel with ID {request.Id} not found");
         }
 
-        // Update the miel properties
+        // Mise à jour des propriétés
         existingMiel.Nom = request.Nom;
         existingMiel.TypeMiel = request.Type;
         existingMiel.Prix = request.Prix;
         existingMiel.Description = request.Description;
         existingMiel.Poids = request.Poids;
 
-        // Save the updated miel back to the repository
+        // Si une nouvelle image est fournie (chemin récupéré depuis le HttpContext)
+        var imagePath = _httpContextAccessor.HttpContext?.Items["ImagePath"] as string;
+        if (!string.IsNullOrWhiteSpace(imagePath))
+        {
+            existingMiel.ImagePath = imagePath;
+        }
+
         await _mielRepository.Modifier(existingMiel);
 
         _logger.LogInformation("Miel with ID {Id} successfully modified", request.Id);
-        
-        // Return the updated miel as a DTO
+
         return existingMiel.Adapt<MielDto>();
     }
 }

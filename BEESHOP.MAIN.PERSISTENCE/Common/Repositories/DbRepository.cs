@@ -20,7 +20,7 @@ public abstract class DbRepository<TBase> : IDbRepository<TBase>
     {
         using var conn = await _db.OpenConnectionAsync();
 
-        var columns = string.Join(", ", typeof(TBase).GetProperties().Select(p => p.Name.ToLower()));
+        var columns = string.Join(", ", typeof(TBase).GetProperties().Select(p => p.Name));
         var values = string.Join(", ", typeof(TBase).GetProperties().Select(p => "@" + p.Name));
 
         var sql = $"INSERT INTO {TableName} ({columns}) VALUES ({values});";
@@ -43,7 +43,7 @@ public abstract class DbRepository<TBase> : IDbRepository<TBase>
 
         var properties = typeof(TBase).GetProperties()
             .Where(p => p.Name != "Id")
-            .Select(p => $"{p.Name.ToLower()} = @{p.Name}");
+            .Select(p => $"{p.Name} = @{p.Name}");
 
         var setClause = string.Join(", ", properties);
         var sql = $"UPDATE {TableName} SET {setClause} WHERE id = @Id;";

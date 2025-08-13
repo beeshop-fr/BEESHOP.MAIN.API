@@ -42,12 +42,35 @@ public class HttpMiel : IEndpointDefinition
         .Accepts<CreerMielCommand>("multipart/form-data")
         .Produces<MielDto>(StatusCodes.Status201Created);
 
-        group.MapPut("/Miel/{id:guid}", async (IMediator mediator, Guid id, ModifierMielCommand command) =>
+        group.MapPut("/Miel/{id:guid}", async (HttpRequest request, IMediator mediator, Guid id, [FromForm] ModifierMielCommand command) =>
         {
             command.Id = id;
+
+            if (command.Image is not null)
+            {
+                var ext = Path.GetExtension(command.Image.FileName);
+                var formatsAutorisés = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+
+                if (!formatsAutorisés.Contains(ext.ToLower()))
+                    return Results.BadRequest("Format d'image non supporté");
+
+                var filename = $"{Guid.NewGuid()}{ext}";
+                var filePath = Path.Combine("wwwroot/images", filename);
+                Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
+
+                using var stream = File.Create(filePath);
+                await command.Image.CopyToAsync(stream);
+
+                request.HttpContext.Items["ImagePath"] = $"/images/{filename}";
+            }
+
             var updated = await mediator.Send(command);
             return Results.Ok(updated);
-        });
+        })
+        .DisableAntiforgery()
+        .Accepts<ModifierMielCommand>("multipart/form-data")
+        .Produces<MielDto>(StatusCodes.Status200OK)
+        .WithName("ModifierMiel");
 
         group.MapGet("/Miel/{id:guid}", async (IMediator mediator, Guid id) =>
         {

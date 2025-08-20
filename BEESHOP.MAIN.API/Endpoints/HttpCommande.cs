@@ -40,5 +40,11 @@ public class HttpCommande : IEndpointDefinition
                 return Results.NotFound();
             return Results.Ok(updated);
         });
+
+        group.MapPost("/Checkout", async (IMediator mediator, CheckoutCommande body, CancellationToken ct) =>
+        {
+            var res = await mediator.Send(body, ct);
+            return Results.Ok(res);
+        });
     }
 }

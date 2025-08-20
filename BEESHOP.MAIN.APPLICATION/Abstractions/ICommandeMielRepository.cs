@@ -10,4 +10,6 @@ public interface ICommandeMielRepository : IDbRepository<CommandeMiel>
     Task<ListEntity<CommandeMiel>> RecupererCommandesMiel();
     Task<CommandeMiel?> RecupererParCommandeEtMiel(Guid commandeId, Guid mielId);
     Task<IEnumerable<CommandeMielDto>> RecupererParCommande(Guid commandeId);
+    Task UpsertQuantite(Guid commandeId, Guid mielId, int quantite, CancellationToken ct = default);
+    Task<IReadOnlyList<CommandeMielDto>> RecupererParCommande(Guid commandeId, CancellationToken ct = default);
 }

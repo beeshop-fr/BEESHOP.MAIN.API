@@ -30,9 +30,13 @@ public record SectionSmtp
     /// <summary>
     ///    Sender's display name.
     /// </summary>
-    public required string FromDisplayName { get; init; } = "BeeShop";
+    public string FromDisplayName { get; init; } = "BeeShop";
     /// <summary>
     ///     Use SSL for the connection.
     /// </summary>
-    public bool UseSsl { get; init; } = true;
+    public bool UseSsl { get; init; } = false;
+    /// <summary>
+    ///   Optional notification address for the beekeeper.
+    /// </summary>
+    public string? NotificationAddress { get; set; }
 }

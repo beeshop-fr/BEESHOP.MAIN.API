@@ -18,7 +18,7 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
     {
         policy
-            .WithOrigins("http://localhost:3000") // front Nuxt
+            .WithOrigins("http://51.75.140.195:3000") // front Nuxt
             .AllowAnyHeader()
             .AllowAnyMethod();
     });

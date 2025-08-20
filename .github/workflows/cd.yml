@@ -11,7 +11,7 @@ on:
   workflow_dispatch: {}
 
 env:
-  IMAGE_NAME: louis404/beeshop-auth-api
+  IMAGE_NAME: louis404/beeshop-main-api
 
 jobs:
   build_and_push:
@@ -56,7 +56,7 @@ jobs:
 
   deploy:
     needs: build_and_push
-    if: github.ref_name == 'main'   # déploie auto seulement depuis main
+    if: github.ref_name == 'main'   # dÃ©ploie auto seulement depuis main
     runs-on: ubuntu-latest
     steps:
       - name: Deploy via SSH
@@ -70,7 +70,6 @@ jobs:
             set -e
             echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
             cd /home/ubuntu/beeshop-main
-            # Assure-toi que .env et docker-compose.yml existent déjà ici
             docker compose pull main-api
             docker compose up -d main-api
             docker image prune -f   

@@ -47,7 +47,12 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t $IMAGE_NAME:${{ steps.ver.outputs.version }} -t $IMAGE_NAME:latest .
+            docker build \
+                --no-cache \
+                -f BEESHOP.MAIN.API/Dockerfile \
+                -t $IMAGE_NAME:${{ steps.ver.outputs.version }} \
+                -t $IMAGE_NAME:latest \
+                .
 
       - name: Push Docker image
         run: |
@@ -56,7 +61,7 @@ jobs:
 
   deploy:
     needs: build_and_push
-    if: github.ref_name == 'main'   # déploie auto seulement depuis main
+    if: github.ref_name == 'main'   # dÃ©ploie auto seulement depuis main
     runs-on: ubuntu-latest
     steps:
       - name: Deploy via SSH

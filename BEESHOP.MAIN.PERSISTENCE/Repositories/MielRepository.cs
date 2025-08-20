@@ -24,4 +24,24 @@ public class MielRepository : DbRepository<Miel>, IMielRepository
         var result = await conn.QueryAsync<Miel>(sql);
         return new ListEntity<Miel>(result.ToList());
     }
+
+    public async Task<IReadOnlyList<Miel>> RecupererParIds(IEnumerable<Guid> ids, CancellationToken ct = default)
+    {
+        if (ids is null) throw new ArgumentNullException(nameof(ids));
+
+        // Déduplication + gestion liste vide
+        var arr = ids.Distinct().ToArray();
+        if (arr.Length == 0)
+            return Array.Empty<Miel>();
+
+        await using var conn = await _db.OpenConnectionAsync(ct);
+
+        // ANY(@ids) avec Guid[] → uuid[] en PostgreSQL (inférence Npgsql OK)
+        const string sql = @"SELECT * FROM miels WHERE id = ANY(@ids);";
+
+        var cmd = new CommandDefinition(sql, new { ids = arr }, cancellationToken: ct);
+        var rows = await conn.QueryAsync<Miel>(cmd);
+
+        return rows.ToList();
+    }
 }

@@ -61,4 +61,3 @@ jobs:
           echo "Build $IMAGE_NAME:${CLEAN_VER}"
           docker build -f Dockerfile -t "$IMAGE_NAME:${CLEAN_VER}" .
           docker push "$IMAGE_NAME:${CLEAN_VER}"
-

@@ -1,0 +1,39 @@
+name: CD - Main API (Deploy)
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag Docker à déployer (ex: 1.x.x)"
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate input tag (x.y.z)
+        run: |
+          TAG="${{ github.event.inputs.tag }}"
+          [[ "$TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Tag invalide: $TAG (attendu: x.y.z)"; exit 1; }
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          script_stop: true
+          script: |
+            set -e
+            IMAGE="louis404/beeshop-main-api"
+            TAG="${{ github.event.inputs.tag }}"
+            echo "Deploying $IMAGE:$TAG"
+
+            echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+            cd /home/ubuntu/beeshop-main
+
+            export MAIN_API_TAG="$TAG"
+
+            docker compose pull main-api
+            docker compose up -d --pull always main-api
+            docker image prune -f

@@ -18,7 +18,7 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
     {
         policy
-            .WithOrigins("http://51.75.140.195:3000") // front Nuxt
+            .WithOrigins("http://51.75.140.195:3000", "https://51.75.140.195:3000") // front Nuxt
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -65,7 +65,7 @@ app.UseStaticFiles();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 

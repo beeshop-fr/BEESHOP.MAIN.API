@@ -14,6 +14,10 @@ on:
 
 env:
   IMAGE_NAME: louis404/beeshop-main-api
+  SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+  SONAR_TOKEN:    ${{ secrets.SONAR_TOKEN }}
+  PROJECT_KEY:    beeshop-main-api       # adapte si tu as déjà un key côté Sonar
+  PROJECT_NAME:   "BEESHOP MAIN API"     # nom affiché dans Sonar
 
 jobs:
   build_and_push:

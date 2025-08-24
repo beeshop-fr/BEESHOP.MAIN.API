@@ -33,5 +33,5 @@ public class Miel : IdentifiableEntity
     public decimal Prix { get; set; }
     public string Description { get; set; }
     public int Poids { get; set; }
-    public string? ImagePath { get; set; }
+    public string ImagePath { get; set; }
 }

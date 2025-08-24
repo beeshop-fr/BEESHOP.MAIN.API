@@ -1,6 +1,4 @@
-﻿using BEESHOP.MAIN.APPLICATION.Abstractions.Common;
-using BEESHOP.MAIN.PERSISTENCE.Common.Config.Section;
-using BEESHOP.MAIN.PERSISTENCE.Common.Repositories;
+﻿using BEESHOP.MAIN.PERSISTENCE.Common.Config.Section;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

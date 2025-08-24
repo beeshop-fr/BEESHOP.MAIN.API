@@ -28,6 +28,9 @@ public sealed class CreerMielHandler : IRequestHandler<CreerMielCommand, MielDto
 
         string? imagePath = _httpContextAccessor.HttpContext?.Items["ImagePath"] as string;
 
+        if (request.Image is null && string.IsNullOrWhiteSpace(_httpContextAccessor.HttpContext?.Items["ImagePath"] as string))
+            throw new ArgumentNullException(nameof(request.Image), "Une image est requise pour créer un miel.");
+
         Miel miel = new(request.Nom,
                         request.Type,
                         request.Prix,

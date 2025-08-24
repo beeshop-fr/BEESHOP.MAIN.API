@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using System.Linq;
 using BEESHOP.MAIN.APPLICATION.Abstractions.Common;
 using BEESHOP.MAIN.APPLICATION.UseCases.Dtos;
 using BEESHOP.MAIN.DOMAIN.Commandes;
@@ -7,7 +6,6 @@ using BEESHOP.MAIN.PERSISTENCE.Common.Config.Section;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using MimeKit;
 
 namespace BEESHOP.MAIN.PERSISTENCE.Common.Repositories;

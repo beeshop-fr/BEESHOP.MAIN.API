@@ -38,13 +38,28 @@ jobs:
       - name: Expose dotnet tools on PATH
         run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
      
-      - name: SonarQube - Begin
+      - name: SonarQube - Begin (main)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
-         dotnet-sonarscanner begin \
-            /k:"${{ env.SONAR_PROJECT_KEY }}" \
-            /n:"${{ env.SONAR_PROJECT_NAME }}" \
+          dotnet-sonarscanner begin \
+            /k:"BEESHOP-MAIN-API" \
+            /n:"BEESHOP MAIN API" \
             /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}" \
             /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
+            /d:sonar.sourceEncoding="UTF-8" \
+            /d:sonar.scm.revision="${{ github.sha }}" \
+            /d:sonar.cs.vstest.reportsPaths="**/TestResults/*.trx" \
+            /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml"
+
+      - name: SonarQube - Begin (develop)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+        run: |
+          dotnet-sonarscanner begin \
+            /k:"BEESHOP-MAIN-API-DEVELOP" \
+            /n:"BEESHOP MAIN API - Develop" \
+            /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}" \
+            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
+            /d:sonar.sourceEncoding="UTF-8" \
             /d:sonar.scm.revision="${{ github.sha }}" \
             /d:sonar.cs.vstest.reportsPaths="**/TestResults/*.trx" \
             /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml"
@@ -63,6 +78,24 @@ jobs:
             /p:CoverletOutputFormat=opencover \
             /p:CoverletOutput=./TestResults/coverage \
             /p:ExcludeByFile="**/Migrations/*"
+
+      - name: Install ReportGenerator
+        run: dotnet tool install --global dotnet-reportgenerator-globaltool
+
+      - name: Generate HTML coverage report
+        run: |
+         reportgenerator \
+            -reports:**/TestResults/**/coverage.opencover.xml \
+            -targetdir:coverage-report \
+            -reporttypes:Html
+
+      - name: Upload coverage HTML
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-html
+          path: coverage-report/
+
 
       - name: SonarQube - End
         if: always()

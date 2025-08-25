@@ -38,28 +38,13 @@ jobs:
       - name: Expose dotnet tools on PATH
         run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
      
-      - name: SonarQube - Begin (main)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      - name: SonarQube - Begin
         run: |
-          dotnet-sonarscanner begin \
-            /k:"BEESHOP-MAIN-API" \
-            /n:"BEESHOP MAIN API" \
+         dotnet-sonarscanner begin \
+            /k:"${{ env.SONAR_PROJECT_KEY }}" \
+            /n:"${{ env.SONAR_PROJECT_NAME }}" \
             /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}" \
             /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
-            /d:sonar.sourceEncoding="UTF-8" \
-            /d:sonar.scm.revision="${{ github.sha }}" \
-            /d:sonar.cs.vstest.reportsPaths="**/TestResults/*.trx" \
-            /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml"
-
-      - name: SonarQube - Begin (develop)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
-        run: |
-          dotnet-sonarscanner begin \
-            /k:"BEESHOP-MAIN-API-DEVELOP" \
-            /n:"BEESHOP MAIN API - Develop" \
-            /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}" \
-            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
-            /d:sonar.sourceEncoding="UTF-8" \
             /d:sonar.scm.revision="${{ github.sha }}" \
             /d:sonar.cs.vstest.reportsPaths="**/TestResults/*.trx" \
             /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml"
@@ -70,32 +55,14 @@ jobs:
       - name: Build solution
         run: dotnet build BEESHOP.MAIN.API.sln --no-restore --configuration Release
 
-      - name: Unit tests (+coverage)
+      - name: Test (+coverage)
         run: |
           dotnet test BEESHOP.MAIN.API.sln -c Release --no-build \
-            --filter "TestCategory!=Integration&Category!=Integration" \
-            --logger "trx;LogFileName=unit-tests.trx" \
+            --logger "trx;LogFileName=test-results.trx" \
             /p:CollectCoverage=true \
             /p:CoverletOutputFormat=opencover \
-            /p:CoverletOutput=./TestResults/unit/coverage
-
-      # - name: Integration tests (+coverage)
-      #   env:
-      #     ConnectionStrings__Postgre: ${{ secrets.REAL_DB_CONNSTRING }}
-      #   run: |
-      #     dotnet test BEESHOP.MAIN.API.sln -c Release --no-build \
-      #       --filter "TestCategory=Integration|Category=Integration" \
-      #       --logger "trx;LogFileName=integration-tests.trx" \
-      #       /p:CollectCoverage=true \
-      #       /p:CoverletOutputFormat=opencover \
-      #       /p:CoverletOutput=./TestResults/integration/coverage
-
-      # - name: Merge coverage to single OpenCover
-      #   run: |
-      #     reportgenerator \
-      #       -reports:**/TestResults/**/coverage.opencover.xml \
-      #       -targetdir:coverage-merged \
-      #       -reporttypes:opencover
+            /p:CoverletOutput=./TestResults/coverage \
+            /p:ExcludeByFile="**/Migrations/*"
 
       - name: SonarQube - End
         if: always()

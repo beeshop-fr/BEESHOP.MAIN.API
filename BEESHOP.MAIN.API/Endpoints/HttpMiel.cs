@@ -3,6 +3,7 @@ using BEESHOP.MAIN.APPLICATION.UseCases.Dtos;
 using BEESHOP.MAIN.APPLICATION.UseCases.Miels.Commands;
 using BEESHOP.MAIN.APPLICATION.UseCases.Miels.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BEESHOP.MAIN.API.Endpoints;
@@ -34,7 +35,13 @@ public class HttpMiel : IEndpointDefinition
 
             request.HttpContext.Items["ImagePath"] = imagePath;
 
+
+
             var created = await mediator.Send(command);
+
+            if (!string.IsNullOrEmpty(imagePath))
+                created.Image = imagePath;
+
             return Results.Created($"/api/main/Miel/{created.Id}", created);
         })
         .DisableAntiforgery()
@@ -45,6 +52,8 @@ public class HttpMiel : IEndpointDefinition
         group.MapPut("/Miel/{id:guid}", async (HttpRequest request, IMediator mediator, Guid id, [FromForm] ModifierMielCommand command) =>
         {
             command.Id = id;
+
+            string? imagePath = null;
 
             if (command.Image is not null)
             {
@@ -62,9 +71,14 @@ public class HttpMiel : IEndpointDefinition
                 await command.Image.CopyToAsync(stream);
 
                 request.HttpContext.Items["ImagePath"] = $"/images/{filename}";
+
+                imagePath = $"/images/{filename}";
             }
 
             var updated = await mediator.Send(command);
+
+            if (!string.IsNullOrEmpty(imagePath))
+                updated.Image = imagePath;
             return Results.Ok(updated);
         })
         .DisableAntiforgery()

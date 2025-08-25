@@ -35,7 +35,7 @@ jobs:
       - name: "Guard: SemVer x.x.x only"
         run: |
           VER="${{ steps.nbgv.outputs.SemVer2 }}"
-          CLEAN_VER="${VER%%+*}"   # enlève le +metadata éventuel
+          CLEAN_VER="${VER%%+*}"
           if [[ ! "$CLEAN_VER" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "Version invalide: $CLEAN_VER (attendu: x.y.z)"
             exit 1
@@ -52,8 +52,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4

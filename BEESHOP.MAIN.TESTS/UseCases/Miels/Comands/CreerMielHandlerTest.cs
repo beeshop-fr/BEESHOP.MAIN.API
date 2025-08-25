@@ -4,7 +4,6 @@ using BEESHOP.MAIN.APPLICATION.UseCases.Miels.Handlers;
 using BEESHOP.MAIN.DOMAIN.Miels;
 using BEESHOP.MAIN.TESTS.Providers;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System.Text;

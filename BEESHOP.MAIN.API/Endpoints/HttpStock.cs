@@ -10,7 +10,7 @@ public class HttpStock : IEndpointDefinition
 {
     public void RegisterEndpoints(WebApplication app)
     {
-        var group = app.MapGroup("/api/main");
+        var group = app.MapGroup("/api/main").RequireCors("AllowFront"); ;
 
         group.MapPost("/Stock", async (IMediator mediator, [FromBody] CreerStockCommand command) =>
         {

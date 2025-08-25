@@ -1,11 +1,12 @@
 ﻿using BEESHOP.MAIN.APPLICATION.Abstractions;
+using BEESHOP.MAIN.APPLICATION.UseCases.Commandes.Commands;
 using BEESHOP.MAIN.APPLICATION.UseCases.Dtos;
 using BEESHOP.MAIN.DOMAIN.Commandes;
 using Mapster;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace BEESHOP.MAIN.APPLICATION.UseCases.Commandes.Commands;
+namespace BEESHOP.MAIN.APPLICATION.UseCases.Commandes.Handlers;
 
 public sealed class CreerCommandeHandler : IRequestHandler<CreerCommande, CommandeDto>
 {

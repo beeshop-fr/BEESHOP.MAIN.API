@@ -10,7 +10,7 @@ public class HttpCommande : IEndpointDefinition
 {
     public void RegisterEndpoints(WebApplication app)
     {
-        var group = app.MapGroup("/api/main");
+        var group = app.MapGroup("/api/main").RequireCors("AllowFront"); ;
 
         group.MapPost("/Commandes", async (IMediator mediator, [FromBody] CreerCommande command) =>
         {

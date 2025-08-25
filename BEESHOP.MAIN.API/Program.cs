@@ -15,13 +15,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
-    {
-        policy
-            .WithOrigins("http://51.75.140.195:3000", "https://51.75.140.195:3000") // front Nuxt
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-    });
+    options.AddPolicy("AllowFront", p => p
+        .WithOrigins("http://51.75.140.195:3000")   // ton front
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+    );
 });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddPersistenceServices(builder.Configuration);
@@ -62,7 +60,7 @@ catch (Exception ex)
 }
 
 app.UseStaticFiles();
-app.UseCors();
+app.UseCors("AllowFront");
 app.UseSwagger();
 app.UseSwaggerUI();
 

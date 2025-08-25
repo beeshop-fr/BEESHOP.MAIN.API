@@ -12,7 +12,7 @@ public class HttpMiel : IEndpointDefinition
 {
     public void RegisterEndpoints(WebApplication app)
     {
-        var group = app.MapGroup("/api/main");
+        var group = app.MapGroup("/api/main").RequireCors("AllowFront"); ;
 
         group.MapPost("/Miel", async (HttpRequest request, IMediator mediator, [FromForm] CreerMielCommand command) =>
         {

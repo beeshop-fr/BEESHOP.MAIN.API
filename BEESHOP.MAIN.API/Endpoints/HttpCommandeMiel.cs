@@ -8,7 +8,7 @@ public class HttpCommandeMiel : IEndpointDefinition
 {
     public void RegisterEndpoints(WebApplication app)
     {
-        var group = app.MapGroup("/api/main");
+        var group = app.MapGroup("/api/main").RequireCors("AllowFront"); ;
 
         group.MapPost("/CommandesMiel", async (IMediator mediator, [FromBody] CreerCommandeMiel command) =>
         {

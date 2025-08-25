@@ -70,32 +70,32 @@ jobs:
       - name: Build solution
         run: dotnet build BEESHOP.MAIN.API.sln --no-restore --configuration Release
 
-      - name: Test (+coverage)
+      - name: Unit tests (+coverage)
         run: |
           dotnet test BEESHOP.MAIN.API.sln -c Release --no-build \
-            --logger "trx;LogFileName=test-results.trx" \
+            --filter "TestCategory!=Integration&Category!=Integration" \
+            --logger "trx;LogFileName=unit-tests.trx" \
             /p:CollectCoverage=true \
             /p:CoverletOutputFormat=opencover \
-            /p:CoverletOutput=./TestResults/coverage \
-            /p:ExcludeByFile="**/Migrations/*"
+            /p:CoverletOutput=./TestResults/unit/coverage
 
-      - name: Install ReportGenerator
-        run: dotnet tool install --global dotnet-reportgenerator-globaltool
+      # - name: Integration tests (+coverage)
+      #   env:
+      #     ConnectionStrings__Postgre: ${{ secrets.REAL_DB_CONNSTRING }}
+      #   run: |
+      #     dotnet test BEESHOP.MAIN.API.sln -c Release --no-build \
+      #       --filter "TestCategory=Integration|Category=Integration" \
+      #       --logger "trx;LogFileName=integration-tests.trx" \
+      #       /p:CollectCoverage=true \
+      #       /p:CoverletOutputFormat=opencover \
+      #       /p:CoverletOutput=./TestResults/integration/coverage
 
-      - name: Generate HTML coverage report
+      - name: Merge coverage to single OpenCover
         run: |
-         reportgenerator \
+          reportgenerator \
             -reports:**/TestResults/**/coverage.opencover.xml \
-            -targetdir:coverage-report \
-            -reporttypes:Html
-
-      - name: Upload coverage HTML
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-html
-          path: coverage-report/
-
+            -targetdir:coverage-merged \
+            -reporttypes:opencover
 
       - name: SonarQube - End
         if: always()

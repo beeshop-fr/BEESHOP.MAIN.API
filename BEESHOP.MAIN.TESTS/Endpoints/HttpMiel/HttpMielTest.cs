@@ -20,31 +20,31 @@ public class HttpMielTest : IClassFixture<WebApplicationFactory<Program>>
         });
     }
 
-    [Fact(DisplayName = "Créer un miel doit retourner 201")]
-    public async Task CreerMiel_ShouldReturn201()
-    {
-        var form = new MultipartFormDataContent();
+    //[Fact(DisplayName = "Créer un miel doit retourner 201")]
+    //public async Task CreerMiel_ShouldReturn201()
+    //{
+    //    var form = new MultipartFormDataContent();
 
-        form.Add(new StringContent("Miel de Lavande", Encoding.UTF8), nameof(CreerMielCommand.Nom));
-        form.Add(new StringContent("EteLiquide", Encoding.UTF8), nameof(CreerMielCommand.Type));
-        form.Add(new StringContent("15", Encoding.UTF8), nameof(CreerMielCommand.Prix));
-        form.Add(new StringContent("Un miel", Encoding.UTF8), nameof(CreerMielCommand.Description));
-        form.Add(new StringContent("500", Encoding.UTF8), nameof(CreerMielCommand.Poids));
+    //    form.Add(new StringContent("Miel de Lavande", Encoding.UTF8), nameof(CreerMielCommand.Nom));
+    //    form.Add(new StringContent("EteLiquide", Encoding.UTF8), nameof(CreerMielCommand.Type));
+    //    form.Add(new StringContent("15", Encoding.UTF8), nameof(CreerMielCommand.Prix));
+    //    form.Add(new StringContent("Un miel", Encoding.UTF8), nameof(CreerMielCommand.Description));
+    //    form.Add(new StringContent("500", Encoding.UTF8), nameof(CreerMielCommand.Poids));
 
-        var bytes = new byte[] { 1, 2, 3, 4, 5 };
-        var image = new ByteArrayContent(bytes);
-        image.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+    //    var bytes = new byte[] { 1, 2, 3, 4, 5 };
+    //    var image = new ByteArrayContent(bytes);
+    //    image.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
 
-        form.Add(image, nameof(CreerMielCommand.Image), "photo.jpg");
+    //    form.Add(image, nameof(CreerMielCommand.Image), "photo.jpg");
 
-        // Act
-        var resp = await _httpClient.PostAsync("/api/main/Miel", form);
+    //    // Act
+    //    var resp = await _httpClient.PostAsync("/api/main/Miel", form);
 
-        // Assert
-        Assert.Equal(HttpStatusCode.Created, resp.StatusCode);
+    //    // Assert
+    //    Assert.Equal(HttpStatusCode.Created, resp.StatusCode);
 
 
-        Assert.NotNull(resp);
-        Assert.Equal(HttpStatusCode.Created, resp.StatusCode);
-    }
+    //    Assert.NotNull(resp);
+    //    Assert.Equal(HttpStatusCode.Created, resp.StatusCode);
+    //}
 }

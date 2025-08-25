@@ -11,4 +11,6 @@ public class MielDto : IdentifiableDto
     public required int Prix { get; set; }
     public string Description { get; set; }
     public required int Poids { get; set; }
+    [JsonPropertyName("image")]
+    public string? Image { get; set; }
 }

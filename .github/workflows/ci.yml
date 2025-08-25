@@ -90,12 +90,12 @@ jobs:
       #       /p:CoverletOutputFormat=opencover \
       #       /p:CoverletOutput=./TestResults/integration/coverage
 
-      - name: Merge coverage to single OpenCover
-        run: |
-          reportgenerator \
-            -reports:**/TestResults/**/coverage.opencover.xml \
-            -targetdir:coverage-merged \
-            -reporttypes:opencover
+      # - name: Merge coverage to single OpenCover
+      #   run: |
+      #     reportgenerator \
+      #       -reports:**/TestResults/**/coverage.opencover.xml \
+      #       -targetdir:coverage-merged \
+      #       -reporttypes:opencover
 
       - name: SonarQube - End
         if: always()

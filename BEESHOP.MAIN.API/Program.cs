@@ -60,8 +60,9 @@ catch (Exception ex)
     Console.WriteLine($"Erreur lors du test de connexion PostgreSQL : {ex.Message}");
     throw;
 }
-//app.UseCors();
+
 app.UseStaticFiles();
+app.UseCors();
 app.UseSwagger();
 app.UseSwaggerUI();
 
